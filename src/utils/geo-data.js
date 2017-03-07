@@ -5,7 +5,6 @@ const Bluebird = require('bluebird');
 const maxmind = require('maxmind');
 const gunzip = require('gunzip-maybe');
 const request = require('request');
-const progress = require('request-progress');
 const configUtils = require('./config');
 const logger = require('./logger');
 
@@ -62,16 +61,13 @@ const refreshDb = co.wrap(function* refreshDb() {
             yield fs.unlinkAsync(DB_CHECKSUM_FILE);
 
             const url = configUtils.getSetting('maxmind.dbUrl');
-            progress(request(url), {})
-                .on('progress', (state) => {
-                    logger.info(state);
-                })
+            request(url)
                 .on('error', (err) => {
                     logger.error(err);
                 })
                 .on('end', () => {
                     saveDbChecksum(remoteChecksum);
-                    logger.info('Done!');
+                    logger.debug('Database updated');
                 })
                 .pipe(gunzip())
                 .pipe(fs.createWriteStream(DB_FILE));
