@@ -12,7 +12,7 @@ const geoIpLookupRouteHandler = require('./route-handlers/geoip-lookup');
 const configUtils = require('./utils/config');
 const logger = require('./utils/logger');
 const geoDataUtils = require('./utils/geo-data');
-// require('./validate-app-environment')();
+require('./validate-app-environment')();
 require('./promisify-dependencies');
 
 const app = express();
