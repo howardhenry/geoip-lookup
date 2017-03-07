@@ -1,19 +1,17 @@
-const path = require('path');
-const fs = require('fs');
 const express = require('express');
 const helmet = require('helmet');
+const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 const compression = require('compression');
 const responseTime = require('response-time');
-const gunzip = require('gunzip-maybe');
-const request = require('request');
-const bodyParserExtended = require('./middleware/body-parser-extended');
 const handleRouteError = require('./middleware/handle-route-error');
 const handleRouteNotFound = require('./middleware/handle-route-not-found');
+const requestLogger = require('./middleware/request-logger');
 const healthCheckRouteHandler = require('./route-handlers/health-check');
+const geoIpLookupRouteHandler = require('./route-handlers/geoip-lookup');
 const configUtils = require('./utils/config');
 const logger = require('./utils/logger');
-const requestUtils = require('./utils/request');
+const geoDataUtils = require('./utils/geo-data');
 // require('./validate-app-environment')();
 require('./promisify-dependencies');
 
@@ -23,8 +21,9 @@ const app = express();
  * Middleware
  */
 app.use(helmet());
-app.use(bodyParserExtended.json().unless({ custom: requestUtils.isMultipart }));
-app.use(bodyParserExtended.urlEncoded({ extended: true }).unless({ custom: requestUtils.isMultipart }));
+app.use(requestLogger());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride());
 app.use(compression());
 app.use(responseTime());
@@ -34,6 +33,7 @@ app.use(handleRouteError());
  * Route handlers
  */
 app.use('/healthy', healthCheckRouteHandler);
+app.use('/lookup', geoIpLookupRouteHandler);
 
 /**
  * 404 Handler
@@ -41,19 +41,7 @@ app.use('/healthy', healthCheckRouteHandler);
  */
 app.use(handleRouteNotFound());
 
-let checksum = null;
-
-request.getAsync('http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.md5')
-    .then((response) => {
-        checksum = response.body;
-        console.log(checksum);
-    });
-
-const filePath = path.join(__dirname, '../db/maxmind.mmdb');
-request
-    .get('http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz')
-    .pipe(gunzip())
-    .pipe(fs.createWriteStream(filePath));
+geoDataUtils.refreshDb();
 
 /**
  * Start app

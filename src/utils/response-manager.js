@@ -1,5 +1,4 @@
 const _ = require('lodash');
-const logger = require('./logger');
 
 const handleSuccess = (res, status, data = null) => {
     let statusCode = status;
@@ -32,19 +31,10 @@ const handleRedirect = (res, statusCode, url) => {
     res.redirect(statusCode, url);
 };
 
-const handleError = (res, status, message, applicationType) => {
+const handleError = (res, status, message) => {
     let statusCode = status;
     let statusText;
     let msg = '';
-    let msgPrefix = 'Gateway';
-
-    if (!_.includes(['GATEWAY', 'GOOGLE'], applicationType)) {
-        // istanbul ignore next
-        // eslint-disable-next-line
-        logger.warn(`Invalid value ${applicationType} for response manager application type. Expected GATEWAY or GOOGLE`);
-    } else {
-        msgPrefix = _.isString(applicationType) ? _.startCase(applicationType.toLowerCase()) : 'Gateway';
-    }
 
     // istanbul ignore next
     if (message instanceof Error) {
@@ -75,7 +65,7 @@ const handleError = (res, status, message, applicationType) => {
             break;
     }
 
-    const payload = { statusCode, statusText, message: `${msgPrefix}: ${msg}` };
+    const payload = { statusCode, statusText, message: msg };
     res.status(statusCode).json(payload).end();
 };
 
