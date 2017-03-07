@@ -1,4 +1,3 @@
-const path = require('path');
 const fs = require('fs');
 const co = require('co');
 const _ = require('lodash');
@@ -7,10 +6,11 @@ const maxmind = require('maxmind');
 const gunzip = require('gunzip-maybe');
 const request = require('request');
 const progress = require('request-progress');
+const configUtils = require('./config');
 const logger = require('./logger');
 
-const DB_CHECKSUM_FILE = path.join(__dirname, '../../db/checksum.md5');
-const DB_FILE = path.join(__dirname, '../../db/maxmind.mmdb');
+const DB_CHECKSUM_FILE = configUtils.getSetting('maxmind.dbChecksumFilePath');
+const DB_FILE = configUtils.getSetting('maxmind.dbFilePath');
 
 const saveDbChecksum = co.wrap(function* saveChecksum(value) {
     try {
@@ -39,7 +39,8 @@ const getRemoteDbChecksum = co.wrap(function* getChecksum() {
     let checksum = '';
 
     try {
-        const response = yield request.getAsync('http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.md5');
+        const url = configUtils.getSetting('maxmind.dbChecksumUrl');
+        const response = yield request.getAsync(url);
 
         checksum = response.body;
         checksum = _.isString(checksum) ? checksum.trim() : '';
@@ -60,7 +61,7 @@ const refreshDb = co.wrap(function* refreshDb() {
         if (savedChecksum !== remoteChecksum) {
             yield fs.unlinkAsync(DB_CHECKSUM_FILE);
 
-            const url = 'http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz';
+            const url = configUtils.getSetting('maxmind.dbUrl');
             progress(request(url), {})
                 .on('progress', (state) => {
                     logger.info(state);
