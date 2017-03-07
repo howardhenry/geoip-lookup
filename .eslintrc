@@ -1,0 +1,35 @@
+{
+  "env": {
+    "es6": true,
+    "node": true,
+    "mocha": true,
+    "builtin": true
+  },
+  "extends": [
+    "airbnb"
+  ],
+  "globals": {
+    "jest": true,
+    "describe": true,
+    "it": true,
+    "expect": true
+  },
+  "rules": {
+    // ---- STYLE ---- //
+
+    // enforces parentheses around arrow function parameters regardless of arity
+    "arrow-body-style": 0,
+    // enforces parentheses around arrow function parameters regardless of arity
+    "arrow-parens": ["error", "always"],
+    // enforce no trailing comma after last property of objects
+    "comma-dangle": ["error", "never"],
+    // disallow usage of configurable warning terms in comments, e.g. TODO or FIXME
+    "no-warning-comments": ["error", { "terms": ["todo", "fixme"], "location": "anywhere" }],
+    // specify tab or space width for your code
+    "indent": ["error", 4, { "SwitchCase": 1 }],
+    // enforce a maximum line length
+    "max-len": ["error", 120],
+    // disallow dangling underscores in identifiers
+    "no-underscore-dangle": 0
+  }
+}

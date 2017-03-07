@@ -1,0 +1,20 @@
+# Logs
+logs
+*.log
+
+# Dependency directory
+node_modules
+
+# Optional npm cache directory
+.npm
+
+# IDE, OS and envs
+.idea/
+envs/
+src/static/
+.DS_Store*
+
+# all generated reports (csslint, eslint, tests)
+reports/
+coverage/
+db/
