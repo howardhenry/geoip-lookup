@@ -38,6 +38,7 @@
     "winston": "2.3.1"
   },
   "devDependencies": {
+    "chai": "3.5.0",
     "dotenv": "4.0.0",
     "eslint-config-airbnb": "14.1.0",
     "eslint-plugin-import": "2.2.0",
@@ -50,7 +51,10 @@
     "gulp-nodemon": "2.2.1",
     "gulp-sourcemaps": "2.4.1",
     "husky": "0.13.2",
+    "rewire": "2.5.2",
     "shelljs": "0.7.6",
+    "sinon": "1.17.7",
+    "supertest": "3.0.0",
     "yargs": "7.0.1"
   }
 }
