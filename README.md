@@ -1,0 +1,1 @@
+#Geo-IP Lookup &middot; [![Build Status](https://travis-ci.org/howardhenry/geoip-lookup.svg?branch=master)](https://travis-ci.org/howardhenry/geoip-lookup)
