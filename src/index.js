@@ -41,12 +41,17 @@ app.use('/lookup', geoIpLookupRouteHandler);
  */
 app.use(handleRouteNotFound());
 
-geoDataUtils.refreshDb();
 
 /**
  * Start app
  */
 const port = configUtils.getPort();
+
+/**
+ * Initial DB Update schedule
+ */
+const cronSchedule = '* * * * *';
+geoDataUtils.initDbUpdateSchedule(cronSchedule);
 
 module.exports = app;
 module.exports.server = app.listen(port, () => logger.info(`App listening on port ${port}`));

@@ -1,6 +1,7 @@
 const fs = require('fs');
 const co = require('co');
 const _ = require('lodash');
+const CronJob = require('cron').CronJob;
 const Bluebird = require('bluebird');
 const maxmind = require('maxmind');
 const gunzip = require('gunzip-maybe');
@@ -67,7 +68,7 @@ const refreshDb = co.wrap(function* refreshDb() {
                 })
                 .on('end', () => {
                     saveDbChecksum(remoteChecksum);
-                    logger.debug('Database updated');
+                    logger.debug(`Database updated: ${remoteChecksum}`);
                 })
                 .pipe(gunzip())
                 .pipe(fs.createWriteStream(DB_FILE));
@@ -125,8 +126,24 @@ const lookupGeoData = co.wrap(function* lookup(value, options) {
     return _.isPlainObject(geoData) ? geoData : {};
 });
 
+const initDbUpdateSchedule = (cronTime) => {
+    try {
+        const options = {
+            cronTime: cronTime || '* * * * *',
+            onTick: refreshDb,
+            start: false,
+            runOnInit: true
+        };
+
+        const job = new CronJob(options);
+        job.start();
+    } catch (err) {
+        logger.error(err);
+    }
+};
+
 module.exports = {
-    refreshDb,
+    initDbUpdateSchedule,
     validateIp,
     lookupGeoData
 };
