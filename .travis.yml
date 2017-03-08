@@ -1,0 +1,18 @@
+language: node_js
+
+node_js:
+  - "6"
+
+install:
+  - npm install
+
+script:
+  - npm run eslint-cli
+  - npm run test-cli
+
+notifications:
+  email:
+    recipients:
+      - web@serverwind.net
+    on_success: change
+    on_failure: change
