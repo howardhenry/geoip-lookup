@@ -10,6 +10,8 @@ const sourcemaps = require('gulp-sourcemaps');
 const shell = require('shelljs');
 const logger = require('./src/utils/logger');
 
+const REPORTS_DIR = './reports';
+
 // During development or testing, import appropriate environment variables
 const envFile = argv['env-file'];
 const envFilePath = envFile ? path.join(__dirname, envFile) : null;
@@ -27,14 +29,14 @@ gulp.task('development', () => {
 });
 
 gulp.task('eslint', () => {
-    const reportsDir = 'reports';
-    if (!fs.existsSync(reportsDir)) {
-        shell.mkdir('-p', reportsDir);
+    if (!fs.existsSync(REPORTS_DIR)) {
+        shell.mkdir('-p', REPORTS_DIR);
     }
 
+    const reportFile = path.join(__dirname, `${REPORTS_DIR}/eslint-checkstyle.xml`);
     return gulp.src(['./src/**/*.js', './tests/**/*.js', './gulpfile.js'])
         .pipe(eslint())
-        .pipe(eslint.format('checkstyle', fs.createWriteStream(`${reportsDir}/eslint-checkstyle.xml`)))
+        .pipe(eslint.format('checkstyle', fs.createWriteStream(reportFile)))
         .pipe(eslint.failAfterError());
 });
 
@@ -53,16 +55,15 @@ gulp.task('pre-test', () => {
 });
 
 gulp.task('test', ['pre-test'], () => {
-    const reportsDir = 'reports';
-    if (!fs.existsSync(reportsDir)) {
-        shell.mkdir('-p', reportsDir);
+    if (!fs.existsSync(REPORTS_DIR)) {
+        shell.mkdir('-p', REPORTS_DIR);
     }
 
     return gulp.src('./tests/**/*.spec.js', { read: false })
         .pipe(mocha({
             reporter: 'mocha-junit-reporter',
             reporterOptions: {
-                mochaFile: `${reportsDir}/tests-junit.xml`
+                mochaFile: path.join(__dirname, `${REPORTS_DIR}/tests-junit.xml`)
             }
         }))
         .pipe(istanbul.writeReports())
