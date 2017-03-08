@@ -32,14 +32,14 @@ gulp.task('eslint', () => {
         shell.mkdir('-p', reportsDir);
     }
 
-    return gulp.src(['./src/**/*.js', './tests/**/*.js', './dredd-hooks.js', './gulpfile.js'])
+    return gulp.src(['./src/**/*.js', './tests/**/*.js', './gulpfile.js'])
         .pipe(eslint())
         .pipe(eslint.format('checkstyle', fs.createWriteStream(`${reportsDir}/eslint-checkstyle.xml`)))
         .pipe(eslint.failAfterError());
 });
 
 gulp.task('eslint-cli', () => {
-    return gulp.src(['./src/**/*.js', './tests/**/*.js', './dredd-hooks.js', './gulpfile.js'])
+    return gulp.src(['./src/**/*.js', './tests/**/*.js', './gulpfile.js'])
         .pipe(eslint())
         .pipe(eslint.format('compact'))
         .pipe(eslint.failAfterError());
