@@ -7,7 +7,7 @@ describe('#validateAppEnvironment', () => {
     beforeEach(() => {
         process.env.NODE_ENV = 'development';
         process.env.DEBUG = 'false';
-        process.env.PORT = '6000';
+        process.env.PORT = '9000';
     });
 
     it('should not throw an error if valid environment variables are present', () => {

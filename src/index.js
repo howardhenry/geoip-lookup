@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
@@ -34,6 +35,9 @@ app.use(handleRouteError());
  */
 app.use('/healthy', healthCheckRouteHandler);
 app.use('/lookup', geoIpLookupRouteHandler);
+if (configUtils.getEnv() !== 'production') {
+    app.use('/test-coverage', express.static(path.join(__dirname, '../coverage/lcov-report')));
+}
 
 /**
  * 404 Handler

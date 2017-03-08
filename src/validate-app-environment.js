@@ -2,7 +2,7 @@ const _ = require('lodash');
 const logger = require('./utils/logger');
 
 const validateAppEnvironment = () => {
-    const { NODE_ENV = 'development', DEBUG = 'false', PORT = '6000' } = process.env;
+    const { NODE_ENV = 'development', DEBUG = 'false', PORT = '9000' } = process.env;
 
     const warnings = [];
     const errors = [];
@@ -21,7 +21,7 @@ const validateAppEnvironment = () => {
     }
 
     if (!PORT) {
-        warnings.push('Missing value for env `PORT`. Falling back to `6000`');
+        warnings.push('Missing value for env `PORT`. Falling back to `9000`');
     } else if (!_.isInteger(Number(PORT)) || Number(PORT) < 1 || Number(PORT) > 65535) {
         errors.push(`Invalid value \`${PORT}\` for env \`PORT\`. Expected int between 1 and 65535 inclusive`);
     }

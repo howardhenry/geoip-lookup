@@ -5,7 +5,7 @@ const settings = {
     app: {
         environment: _.get(process, 'env.NODE_ENV', 'development'),
         debug: _.get(process, 'env.DEBUG') === 'true',
-        port: _.get(process, 'env.PORT', 6000)
+        port: _.get(process, 'env.PORT', 9000)
     },
     maxmind: {
         dbChecksumUrl: 'http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.md5',
