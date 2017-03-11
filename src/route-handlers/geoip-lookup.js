@@ -16,7 +16,7 @@ router.get('/', co.wrap(function* lookup(req, res) {
         if (!_.includes(supportedLangs, lang)) {
             const msg = `Invalid parameter: 'lang'. Expected value to be one of: ${supportedLangs.join(', ')}`;
             responseManager.handleError(res, 400, msg);
-        } else if (!geoDataUtils.validateIp(ip)) {
+        } else if (!geoDataUtils.isValidIpAddress(ip)) {
             responseManager.handleError(res, 400, `Invalid ip address: ${ip}`);
         } else {
             const options = { lang, verbose };

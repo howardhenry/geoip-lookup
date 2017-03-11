@@ -78,7 +78,7 @@ const refreshDb = co.wrap(function* refreshDb() {
     }
 });
 
-const validateIp = (value) => {
+const isValidIpAddress = (value) => {
     return maxmind.validate(value);
 };
 
@@ -90,7 +90,7 @@ const formatGeoData = (geoData, options) => {
         const names = _.get(obj, 'names');
 
         if (_.isPlainObject(names)) {
-            formattedData[key].names = _.pick(names, options.lang);
+            formattedData[key].name = _.get(names, options.lang) || _.get(names, 'en');
 
             // Remove `geoname_id` property if verbose is not set
             if (!options.verbose) {
@@ -98,14 +98,18 @@ const formatGeoData = (geoData, options) => {
             }
         } else if (key === 'subdivisions' && _.isArray(obj) && obj.length > 0) {
             obj.forEach((subdivision, ix) => {
-                formattedData[key][ix].names = _.pick(subdivision.names, options.lang);
+                formattedData[key][ix].name = _.get(subdivision.names, options.lang) || _.get(names, 'en');
 
                 // Remove `geoname_id` property if verbose is not set
                 if (!options.verbose) {
                     delete formattedData[key][ix].geoname_id;
                 }
+
+                delete formattedData[key][ix].names;
             });
         }
+
+        delete formattedData[key].names;
     });
 
     return formattedData;
@@ -144,6 +148,6 @@ const initDbUpdateSchedule = (cronTime) => {
 
 module.exports = {
     initDbUpdateSchedule,
-    validateIp,
+    isValidIpAddress,
     lookupGeoData
 };
